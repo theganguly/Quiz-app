@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ Quiz App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Exam Selection -->
+    <section id="exam-screen" class="screen">
+        <h1>MCQ Quiz</h1>
+        <h2>Select Your Exam</h2>
+
+        <div class="exam-list">
+            <button onclick="selectExam('SSC')">SSC</button>
+            <button onclick="selectExam('Banking')">Banking</button>
+            <button onclick="selectExam('Railway')">Railway</button>
+            <button onclick="selectExam('UPSC')">UPSC</button>
+            <button onclick="selectExam('Other')">Other</button>
+        </div>
+    </section>
+
+
+    <!-- Subject Selection -->
+    <section id="subject-screen" class="screen hidden">
+        <h2>Select Subject</h2>
+
+        <div id="subject-list"></div>
+
+        <button onclick="goBack('exam-screen')">Back</button>
+    </section>
+
+
+    <!-- Topic Selection -->
+    <section id="topic-screen" class="screen hidden">
+        <h2>Select Topic</h2>
+
+        <div id="topic-list"></div>
+
+        <button onclick="goBack('subject-screen')">Back</button>
+    </section>
+
+
+    <!-- Difficulty Selection -->
+    <section id="difficulty-screen" class="screen hidden">
+        <h2>Select Difficulty</h2>
+
+        <div class="difficulty-list">
+            <button onclick="selectDifficulty('Easy')">Easy</button>
+            <button onclick="selectDifficulty('Medium')">Medium</button>
+            <button onclick="selectDifficulty('Hard')">Hard</button>
+        </div>
+
+        <button onclick="goBack('topic-screen')">Back</button>
+    </section>
+
+
+    <!-- Quiz Screen -->
+    <section id="quiz-screen" class="screen hidden">
+        <p id="question-number">Question 1 of 10</p>
+
+        <h2 id="question"></h2>
+
+        <div id="options"></div>
+
+        <button id="next-button" onclick="nextQuestion()">Next</button>
+    </section>
+
+
+    <!-- Result Screen -->
+    <section id="result-screen" class="screen hidden">
+        <h2>Quiz Complete</h2>
+
+        <p id="score"></p>
+
+        <button onclick="restartQuiz()">Try Again</button>
+    </section>
+
+
+    <script src="script.js"></script>
+</body>
+</html>
