@@ -1,0 +1,315 @@
+/* ================================
+   MCQ QUIZ APP - STYLE
+   ================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: #f5f7fb;
+    color: #172033;
+}
+
+/* Main screen */
+
+.screen {
+    width: 100%;
+    max-width: 520px;
+    min-height: 100vh;
+    margin: auto;
+    padding: 28px 20px;
+    background: #ffffff;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Headings */
+
+h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+h2 {
+    font-size: 22px;
+    margin-bottom: 24px;
+}
+
+/* Exam selection */
+
+#exam-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#exam-screen h1 {
+    text-align: center;
+    font-size: 36px;
+}
+
+#exam-screen h2 {
+    text-align: center;
+    color: #697386;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 30px;
+}
+
+.exam-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.exam-list button {
+    min-height: 110px;
+    border: none;
+    border-radius: 20px;
+    background: #f1f4ff;
+    color: #172033;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.exam-list button:hover {
+    transform: translateY(-3px);
+}
+
+.exam-list button:active {
+    transform: scale(0.97);
+}
+
+/* Subject / Topic list */
+
+#subject-list,
+#topic-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 65vh;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+#subject-list button,
+#topic-list button {
+    width: 100%;
+    padding: 20px;
+    border: none;
+    border-radius: 16px;
+    background: #f5f7fb;
+    color: #172033;
+    text-align: left;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#subject-list button:hover,
+#topic-list button:hover {
+    background: #e9edff;
+    transform: translateX(3px);
+}
+
+/* Difficulty */
+
+.difficulty-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 25px;
+}
+
+.difficulty-list button {
+    width: 100%;
+    padding: 20px;
+    border: none;
+    border-radius: 16px;
+    background: #f1f4ff;
+    color: #172033;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.difficulty-list button:hover {
+    transform: translateY(-2px);
+}
+
+/* Back button */
+
+section > button {
+    border: none;
+    background: transparent;
+    color: #596579;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 12px 0;
+}
+
+/* Quiz */
+
+#quiz-screen {
+    display: flex;
+    flex-direction: column;
+}
+
+#question-number {
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+#question {
+    font-size: 24px;
+    line-height: 1.4;
+    margin-bottom: 28px;
+}
+
+#options {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+}
+
+#options button {
+    width: 100%;
+    padding: 18px;
+    border: 2px solid #e2e6ef;
+    border-radius: 15px;
+    background: #ffffff;
+    color: #172033;
+    text-align: left;
+    font-size: 16px;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#options button:hover {
+    border-color: #5b6cff;
+    background: #f6f7ff;
+}
+
+/* Next button */
+
+#next-button {
+    width: 100%;
+    margin-top: auto;
+    padding: 17px;
+    border: none;
+    border-radius: 15px;
+    background: #4f5fff;
+    color: white;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#next-button:hover {
+    transform: translateY(-2px);
+}
+
+#next-button:active {
+    transform: scale(0.98);
+}
+
+/* Result */
+
+#result-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#result-screen h2 {
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+#score {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f4ff;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 30px;
+}
+
+#result-screen button {
+    width: 100%;
+    max-width: 300px;
+    padding: 17px;
+    border: none;
+    border-radius: 15px;
+    background: #4f5fff;
+    color: white;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* Scrollbar */
+
+#subject-list::-webkit-scrollbar,
+#topic-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+#subject-list::-webkit-scrollbar-thumb,
+#topic-list::-webkit-scrollbar-thumb {
+    background: #cdd2df;
+    border-radius: 10px;
+}
+
+/* Mobile */
+
+@media (max-width: 480px) {
+
+    .screen {
+        padding: 24px 16px;
+    }
+
+    h1 {
+        font-size: 30px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    #question {
+        font-size: 21px;
+    }
+
+    .exam-list {
+        gap: 12px;
+    }
+
+    .exam-list button {
+        min-height: 95px;
+    }
+}
