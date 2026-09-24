@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>MCQ Practice</title>
+<style>
+  :root{
+    --bg:#0B1220;
+    --card:#111827;
+    --border:#334155;
+    --primary:#3B82F6;
+    --accent:#6366F1;
+    --text:#F8FAFC;
+    --text2:#94A3B8;
+    --green:#22C55E;
+    --red:#EF4444;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+  }
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:14px 16px;
+    border-bottom:1px solid var(--border);
+    position:sticky;
+    top:0;
+    background:var(--bg);
+    z-index:10;
+  }
+  header h1{
+    font-size:18px;
+    font-weight:600;
+    margin:0;
+    white-space:nowrap;
+  }
+  #fileBtn{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:var(--card);
+    border:1px solid var(--border);
+    color:var(--text2);
+    font-size:13px;
+    padding:8px 12px;
+    border-radius:10px;
+    cursor:pointer;
+    max-width:60%;
+    overflow:hidden;
+  }
+  #fileBtn span{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  #fileInput{display:none;}
+
+  main{
+    flex:1;
+    width:100%;
+    max-width:640px;
+    margin:0 auto;
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+
+  /* Empty state */
+  #emptyState{
+    margin-top:10vh;
+    border:1.5px dashed var(--border);
+    border-radius:14px;
+    padding:40px 24px;
+    text-align:center;
+    color:var(--text2);
+  }
+  #emptyState svg{margin-bottom:14px;color:var(--primary);}
+  #emptyState h2{color:var(--text);font-size:17px;margin:0 0 8px;}
+  #emptyState p{font-size:14px;line-height:1.5;margin:0 0 18px;}
+  .bigBtn{
+    background:var(--primary);
+    color:#fff;
+    border:none;
+    font-size:15px;
+    font-weight:600;
+    padding:12px 20px;
+    border-radius:10px;
+    cursor:pointer;
+  }
+  #dropHint{font-size:12px;color:var(--text2);margin-top:14px;}
+
+  #errorBox{
+    background:rgba(239,68,68,.1);
+    border:1px solid var(--red);
+    color:#fecaca;
+    padding:12px 14px;
+    border-radius:10px;
+    font-size:13px;
+    display:none;
+  }
+
+  /* Quiz */
+  #quiz{display:none;flex-direction:column;gap:16px;}
+  .metaRow{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-size:13px;
+    color:var(--text2);
+  }
+  .metaRow b{color:var(--text);font-weight:600;}
+
+  #questionCard{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:18px;
+  }
+  #questionText{
+    font-size:16px;
+    line-height:1.5;
+    font-weight:500;
+    white-space:pre-wrap;
+  }
+  #questionExam{
+    font-size:12px;
+    color:var(--text2);
+    margin-top:8px;
+  }
+  #questionImage{
+    max-width:100%;
+    border-radius:10px;
+    margin-top:14px;
+    display:block;
+  }
+
+  #optionsList{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .option{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:var(--card);
+    border:1.5px solid var(--border);
+    border-radius:10px;
+    padding:13px 14px;
+    cursor:pointer;
+    font-size:15px;
+    line-height:1.4;
+    transition:border-color .12s, background .12s;
+  }
+  .option:hover{border-color:#4B5A73;}
+  .radioDot{
+    flex:0 0 18px;
+    width:18px;height:18px;
+    border-radius:50%;
+    border:2px solid var(--text2);
+    position:relative;
+  }
+  .option.selected{border-color:var(--primary);background:rgba(59,130,246,.08);}
+  .option.selected .radioDot{border-color:var(--primary);}
+  .option.selected .radioDot::after{
+    content:"";
+    position:absolute;
+    inset:3px;
+    border-radius:50%;
+    background:var(--primary);
+  }
+  .option.correct{border-color:var(--green);background:rgba(34,197,94,.08);}
+  .option.correct .radioDot{border-color:var(--green);}
+  .option.correct .radioDot::after{background:var(--green);}
+  .option.wrong{border-color:var(--red);background:rgba(239,68,68,.08);}
+  .option.wrong .radioDot{border-color:var(--red);}
+  .option.wrong .radioDot::after{background:var(--red);}
+
+  #revealBtn{
+    align-self:flex-start;
+    background:none;
+    border:1px solid var(--border);
+    color:var(--text2);
+    font-size:13px;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+  }
+  #explanationBox{
+    display:none;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:12px 14px;
+    font-size:13px;
+    color:var(--text2);
+    line-height:1.5;
+    white-space:pre-wrap;
+  }
+
+  #navBar{
+    position:sticky;
+    bottom:0;
+    display:flex;
+    gap:10px;
+    padding:12px 0 16px;
+    background:linear-gradient(to top, var(--bg) 70%, transparent);
+  }
+  .navBtn{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:13px 10px;
+    border-radius:10px;
+    border:none;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    color:#fff;
+  }
+  #prevBtn{background:#293449;flex:1;}
+  #randomBtn{background:var(--accent);flex:1;}
+  #nextBtn{background:var(--primary);flex:1.2;}
+  .navBtn:disabled{opacity:.4;cursor:not-allowed;}
+  .navBtn svg{flex:0 0 auto;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>MCQ Practice</h1>
+  <button id="fileBtn">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+    <span id="fileBtnLabel">Load CSV</span>
+  </button>
+  <input type="file" id="fileInput" accept=".csv,text/csv">
+</header>
+
+<main>
+  <div id="errorBox"></div>
+
+  <div id="emptyState">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+    <h2>Load a CSV file to begin</h2>
+    <p>Needs a question column and 2 or more option columns (e.g. <b>question_text, opt_a, opt_b, opt_c, opt_d</b> or <b>Question, Option1, Option2, Option3, Option4</b>). An answer column enables answer checking.</p>
+    <button class="bigBtn" id="emptyLoadBtn">Choose CSV File</button>
+    <div id="dropHint">or drag &amp; drop a .csv file anywhere on this page</div>
+  </div>
+
+  <div id="quiz">
+    <div class="metaRow">
+      <span>Question <b id="qNum">1</b> / <span id="qTotal">1</span></span>
+      <span id="qFileName"></span>
+    </div>
+
+    <div id="questionCard">
+      <div id="questionText"></div>
+      <img id="questionImage" style="display:none;">
+      <div id="questionExam" style="display:none;"></div>
+    </div>
+
+    <div id="optionsList"></div>
+
+    <button id="revealBtn" style="display:none;">Show Answer</button>
+    <div id="explanationBox"></div>
+
+    <div id="navBar">
+      <button class="navBtn" id="prevBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>
+        Previous
+      </button>
+      <button class="navBtn" id="randomBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>
+        Random
+      </button>
+      <button class="navBtn" id="nextBtn">
+        Next
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </div>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  var state = {
+    fileName: "",
+    colMap: null,
+    rows: [],
+    idx: 0,
+    selections: {},   // rowIndex -> option origIndex
+    revealed: {}       // rowIndex -> true
+  };
+
+  var els = {
+    fileBtn: document.getElementById('fileBtn'),
+    fileBtnLabel: document.getElementById('fileBtnLabel'),
+    fileInput: document.getElementById('fileInput'),
+    emptyLoadBtn: document.getElementById('emptyLoadBtn'),
+    emptyState: document.getElementById('emptyState'),
+    errorBox: document.getElementById('errorBox'),
+    quiz: document.getElementById('quiz'),
+    qNum: document.getElementById('qNum'),
+    qTotal: document.getElementById('qTotal'),
+    qFileName: document.getElementById('qFileName'),
+    questionText: document.getElementById('questionText'),
+    questionImage: document.getElementById('questionImage'),
+    questionExam: document.getElementById('questionExam'),
+    optionsList: document.getElementById('optionsList'),
+    revealBtn: document.getElementById('revealBtn'),
+    explanationBox: document.getElementById('explanationBox'),
+    prevBtn: document.getElementById('prevBtn'),
+    randomBtn: document.getElementById('randomBtn'),
+    nextBtn: document.getElementById('nextBtn')
+  };
+
+  // ---------- CSV parsing (RFC4180-style, handles quoted commas & newlines) ----------
+  function parseCSV(text){
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+    var rows = [], row = [], field = '', inQuotes = false;
+    var i = 0, len = text.length;
+    while (i < len) {
+      var c = text[i];
+      if (inQuotes) {
+        if (c === '"') {
+          if (text[i+1] === '"') { field += '"'; i += 2; continue; }
+          inQuotes = false; i++; continue;
+        }
+        field += c; i++; continue;
+      } else {
+        if (c === '"') { inQuotes = true; i++; continue; }
+        if (c === ',') { row.push(field); field=''; i++; continue; }
+        if (c === '\r') { i++; continue; }
+        if (c === '\n') { row.push(field); field=''; rows.push(row); row=[]; i++; continue; }
+        field += c; i++; continue;
+      }
+    }
+    if (field.length > 0 || row.length > 0) { row.push(field); rows.push(row); }
+    return rows;
+  }
+
+  function detectColumns(headers){
+    function norm(h){ return h.toLowerCase().replace(/[^a-z0-9]/g,''); }
+    var question=null, image=null, exam=null, answer=null, explanation=null;
+    var optionCols = [];
+    headers.forEach(function(h){
+      var n = norm(h);
+      if (!question && n.indexOf('question') !== -1 && n !== 'questionno' && n !== 'questionnumber' && n !== 'qno') question = h;
+      if (!image && (n.indexOf('image') !== -1 || n.indexOf('img') !== -1)) image = h;
+      if (!exam && (n.indexOf('exam') !== -1 || n.indexOf('detail') !== -1)) exam = h;
+      if (!answer && n.indexOf('answer') !== -1) answer = h;
+      if (!explanation && (n.indexOf('solution') !== -1 || n.indexOf('explanation') !== -1)) explanation = h;
+      var m = n.match(/^(opt|option|choice)([a-h]|[1-8])$/);
+      if (m) {
+        var suffix = m[2];
+        var rank = /[a-h]/.test(suffix) ? (suffix.charCodeAt(0) - 97) : (parseInt(suffix,10) - 1);
+        optionCols.push({header:h, rank:rank});
+      }
+    });
+    var preferredAnswer = headers.find(function(h){
+      var n = norm(h);
+      return n.indexOf('correct') !== -1 && n.indexOf('answer') !== -1;
+    });
+    if (preferredAnswer) answer = preferredAnswer;
+    optionCols.sort(function(a,b){ return a.rank - b.rank; });
+    return {
+      question: question, image: image, exam: exam, answer: answer, explanation: explanation,
+      options: optionCols.map(function(o){ return o.header; })
+    };
+  }
+
+  function normalizeAnswerToIndex(raw, opts){
+    if (!raw) return -1;
+    var rawTrim = String(raw).trim();
+    var a = rawTrim.toLowerCase().replace(/[().\s]/g,'');
+    if (/^[a-h]$/.test(a)) return a.charCodeAt(0) - 97;
+    if (/^[1-8]$/.test(a)) return parseInt(a,10) - 1;
+    var found = opts.find(function(o){ return o.text.toLowerCase() === rawTrim.toLowerCase(); });
+    return found ? found.idx : -1;
+  }
+
+  // ---------- File loading ----------
+  function showError(msg){
+    els.errorBox.textContent = msg;
+    els.errorBox.style.display = 'block';
+  }
+  function clearError(){
+    els.errorBox.style.display = 'none';
+    els.errorBox.textContent = '';
+  }
+
+  function loadFile(file){
+    if (!file) return;
+    clearError();
+    els.fileBtnLabel.textContent = 'Reading…';
+    var reader = new FileReader();
+    reader.onload = function(e){
+      setTimeout(function(){ processCSVText(e.target.result, file.name); }, 10);
+    };
+    reader.onerror = function(){
+      showError('Could not read that file. Please try again.');
+      els.fileBtnLabel.textContent = 'Load CSV';
+    };
+    reader.readAsText(file);
+  }
+
+  function processCSVText(text, fileName){
+    var table;
+    try {
+      table = parseCSV(text);
+    } catch (err) {
+      showError('Could not parse this CSV file.');
+      els.fileBtnLabel.textContent = 'Load CSV';
+      return;
+    }
+    if (!table.length) { showError('This file appears to be empty.'); els.fileBtnLabel.textContent='Load CSV'; return; }
+
+    var headers = table[0].map(function(h){ return h.trim(); });
+    var colMap = detectColumns(headers);
+
+    if (!colMap.question) {
+      showError('No question column found. Expecting a header containing "question".');
+      els.fileBtnLabel.textContent = 'Load CSV';
+      return;
+    }
+    if (colMap.options.length < 2) {
+      showError('Need at least 2 option columns (e.g. opt_a/opt_b or Option1/Option2).');
+      els.fileBtnLabel.textContent = 'Load CSV';
+      return;
+    }
+
+    var rows = [];
+    for (var r = 1; r < table.length; r++) {
+      var raw = table[r];
+      if (raw.length === 1 && raw[0].trim() === '') continue;
+      var obj = {};
+      for (var c = 0; c < headers.length; c++) obj[headers[c]] = raw[c] !== undefined ? raw[c] : '';
+      rows.push(obj);
+    }
+
+    if (!rows.length) {
+      showError('No question rows found in this file.');
+      els.fileBtnLabel.textContent = 'Load CSV';
+      return;
+    }
+
+    state.fileName = fileName;
+    state.colMap = colMap;
+    state.rows = rows;
+    state.idx = 0;
+    state.selections = {};
+    state.revealed = {};
+
+    els.fileBtnLabel.textContent = fileName;
+    els.emptyState.style.display = 'none';
+    els.quiz.style.display = 'flex';
+    els.qFileName.textContent = fileName;
+    els.qTotal.textContent = rows.length;
+    renderQuestion();
+  }
+
+  // ---------- Rendering ----------
+  function getRowOptions(row){
+    var cm = state.colMap;
+    var list = [];
+    for (var i = 0; i < cm.options.length; i++) {
+      var text = (row[cm.options[i]] || '').trim();
+      if (text !== '') list.push({ text: text, idx: i });
+    }
+    return list;
+  }
+
+  function renderQuestion(){
+    var row = state.rows[state.idx];
+    var cm = state.colMap;
+
+    els.qNum.textContent = state.idx + 1;
+    els.questionText.textContent = (row[cm.question] || '').trim();
+
+    if (cm.exam && row[cm.exam] && row[cm.exam].trim()) {
+      els.questionExam.textContent = row[cm.exam].trim();
+      els.questionExam.style.display = 'block';
+    } else {
+      els.questionExam.style.display = 'none';
+    }
+
+    if (cm.image && row[cm.image] && row[cm.image].trim()) {
+      els.questionImage.src = row[cm.image].trim();
+      els.questionImage.style.display = 'block';
+    } else {
+      els.questionImage.style.display = 'none';
+      els.questionImage.removeAttribute('src');
+    }
+
+    var opts = getRowOptions(row);
+    els.optionsList.innerHTML = '';
+    opts.forEach(function(o){
+      var div = document.createElement('div');
+      div.className = 'option';
+      div.setAttribute('role','radio');
+      div.setAttribute('tabindex','0');
+      var dot = document.createElement('div');
+      dot.className = 'radioDot';
+      var span = document.createElement('span');
+      span.textContent = o.text;
+      div.appendChild(dot);
+      div.appendChild(span);
+      div.addEventListener('click', function(){ selectOption(o.idx); });
+      div.addEventListener('keydown', function(ev){
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); selectOption(o.idx); }
+      });
+      els.optionsList.appendChild(div);
+    });
+
+    var hasAnswer = !!cm.answer;
+    els.revealBtn.style.display = hasAnswer ? 'inline-block' : 'none';
+    els.revealBtn.textContent = state.revealed[state.idx] ? 'Hide Answer' : 'Show Answer';
+    els.explanationBox.style.display = 'none';
+    els.explanationBox.textContent = '';
+
+    applyOptionStates();
+
+    els.prevBtn.disabled = state.rows.length <= 1;
+    els.nextBtn.disabled = state.rows.length <= 1;
+    els.randomBtn.disabled = state.rows.length <= 1;
+
+    window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
+  }
+
+  function applyOptionStates(){
+    var row = state.rows[state.idx];
+    var cm = state.colMap;
+    var opts = getRowOptions(row);
+    var selected = state.selections[state.idx];
+    var revealed = state.revealed[state.idx];
+    var correctIdx = -1;
+    if (cm.answer) correctIdx = normalizeAnswerToIndex(row[cm.answer], opts);
+
+    var nodes = els.optionsList.children;
+    for (var i = 0; i < opts.length; i++) {
+      var node = nodes[i];
+      node.classList.remove('selected','correct','wrong');
+      if (revealed && correctIdx === opts[i].idx) {
+        node.classList.add('correct');
+      } else if (revealed && selected === opts[i].idx && selected !== correctIdx) {
+        node.classList.add('wrong');
+      } else if (!revealed && selected === opts[i].idx) {
+        node.classList.add('selected');
+      }
+    }
+
+    if (revealed && cm.explanation && row[cm.explanation] && row[cm.explanation].trim()) {
+      els.explanationBox.textContent = row[cm.explanation].trim();
+      els.explanationBox.style.display = 'block';
+    } else {
+      els.explanationBox.style.display = 'none';
+    }
+    els.revealBtn.textContent = revealed ? 'Hide Answer' : 'Show Answer';
+  }
+
+  function selectOption(origIdx){
+    state.selections[state.idx] = origIdx;
+    applyOptionStates();
+  }
+
+  els.revealBtn.addEventListener('click', function(){
+    state.revealed[state.idx] = !state.revealed[state.idx];
+    applyOptionStates();
+  });
+
+  // ---------- Navigation ----------
+  function goPrev(){
+    if (!state.rows.length) return;
+    state.idx = (state.idx - 1 + state.rows.length) % state.rows.length;
+    renderQuestion();
+  }
+  function goNext(){
+    if (!state.rows.length) return;
+    state.idx = (state.idx + 1) % state.rows.length;
+    renderQuestion();
+  }
+  function goRandom(){
+    if (state.rows.length <= 1) return;
+    var next;
+    do { next = Math.floor(Math.random() * state.rows.length); } while (next === state.idx);
+    state.idx = next;
+    renderQuestion();
+  }
+
+  els.prevBtn.addEventListener('click', goPrev);
+  els.nextBtn.addEventListener('click', goNext);
+  els.randomBtn.addEventListener('click', goRandom);
+
+  document.addEventListener('keydown', function(ev){
+    if (!state.rows.length) return;
+    if (ev.target && (ev.target.tagName === 'INPUT' || ev.target.tagName === 'TEXTAREA')) return;
+    if (ev.key === 'ArrowLeft') goPrev();
+    else if (ev.key === 'ArrowRight') goNext();
+    else if (ev.key.toLowerCase() === 'r') goRandom();
+  });
+
+  // ---------- File input wiring ----------
+  function openPicker(){ els.fileInput.click(); }
+  els.fileBtn.addEventListener('click', openPicker);
+  els.emptyLoadBtn.addEventListener('click', openPicker);
+  els.fileInput.addEventListener('change', function(ev){
+    var f = ev.target.files && ev.target.files[0];
+    if (f) loadFile(f);
+    els.fileInput.value = '';
+  });
+
+  // Drag & drop
+  ['dragover','drop'].forEach(function(evt){
+    document.addEventListener(evt, function(e){ e.preventDefault(); });
+  });
+  document.addEventListener('drop', function(e){
+    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) loadFile(f);
+  });
+
+})();
+</script>
+</body>
+</html>
